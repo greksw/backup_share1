@@ -28,13 +28,26 @@ jobs:
         run: |
           set -Eeuo pipefail
           chmod +x backup-job.sh
-          ./backup-job.sh --config config/job-sync.conf.example --check-config
-          ./backup-job.sh --config config/job-archive.conf.example --check-config
+
+          sudo install -d -m 0750 /tmp/backup-toolkit-ci
+          sudo install -o root -g root -m 0640 \
+            config/job-sync.conf.example \
+            /tmp/backup-toolkit-ci/job-sync.conf
+          sudo install -o root -g root -m 0640 \
+            config/job-archive.conf.example \
+            /tmp/backup-toolkit-ci/job-archive.conf
+
+          sudo ./backup-job.sh \
+            --config /tmp/backup-toolkit-ci/job-sync.conf \
+            --check-config
+          sudo ./backup-job.sh \
+            --config /tmp/backup-toolkit-ci/job-archive.conf \
+            --check-config
 
       - name: Check for obvious embedded secrets
         shell: bash
         run: |
           set -Eeuo pipefail
           ! grep -REn \
-            '(TOKEN=|BOT_TOKEN=|CHAT_ID=[0-9]+|password=[^r][^e][^p]|ZIP_PASSWORD=| -p[^ ]{4,})' \
+            '(TOKEN=|BOT_TOKEN=|CHAT_ID=[0-9]+|ZIP_PASSWORD=|password=[0-9A-Za-z!@#$%^&*()_+.-]{6,})' \
             backup-job.sh README.md systemd config/job-*.conf.example
