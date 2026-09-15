@@ -1,0 +1,67 @@
+name: Shell CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Bash syntax
+        run: bash -n backup-job.sh
+
+      - name: ShellCheck
+        run: shellcheck backup-job.sh
+
+      - name: Validate safe examples
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          chmod +x backup-job.sh
+
+          sudo install -d -m 0750 /tmp/backup-toolkit-ci
+          sudo install -o root -g root -m 0640 \
+            config/job-sync.conf.example \
+            /tmp/backup-toolkit-ci/job-sync.conf
+          sudo install -o root -g root -m 0640 \
+            config/job-archive.conf.example \
+            /tmp/backup-toolkit-ci/job-archive.conf
+
+          sudo ./backup-job.sh \
+            --config /tmp/backup-toolkit-ci/job-sync.conf \
+            --check-config
+          sudo ./backup-job.sh \
+            --config /tmp/backup-toolkit-ci/job-archive.conf \
+            --check-config
+
+      - name: Check for obvious embedded secrets
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          matches=$(
+            grep -REn \
+              '(TOKEN=|BOT_TOKEN=|CHAT_ID=[0-9]+|ZIP_PASSWORD=|password=[^[:space:]]+)' \
+              backup-job.sh README.md systemd config \
+              || true
+          )
+
+          unexpected=$(
+            printf '%s\n' "$matches" |
+              grep -v 'password=replace-with-real-password' |
+              grep -v 'password line with a placeholder' \
+              || true
+          )
+
+          test -z "$unexpected"
+          test "$(grep -Ec '^password=replace-with-real-password$' config/cifs.credentials.example)" -eq 1

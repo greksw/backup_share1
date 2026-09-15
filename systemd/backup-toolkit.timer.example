@@ -1,0 +1,10 @@
+[Unit]
+Description=Run SMB backup toolkit weekly
+
+[Timer]
+OnCalendar=Thu *-*-* 12:30:00
+Persistent=true
+RandomizedDelaySec=10m
+
+[Install]
+WantedBy=timers.target

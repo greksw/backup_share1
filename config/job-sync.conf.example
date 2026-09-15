@@ -1,0 +1,18 @@
+# Trusted root-owned configuration example for backup-job.sh
+# Install as /etc/backup-toolkit/job.conf with mode 0640 or stricter.
+
+JOB_NAME='department-share-sync'
+MODE='sync'
+
+SOURCE_SHARE='//source.example.local/data'
+SOURCE_MOUNT='/mnt/backup-source'
+SOURCE_CREDENTIALS='/etc/backup-toolkit/source.credentials'
+
+TARGET_SHARE='//backup.example.local/archive'
+TARGET_MOUNT='/mnt/backup-target'
+TARGET_CREDENTIALS='/etc/backup-toolkit/target.credentials'
+TARGET_SUBDIR='department-share'
+
+CIFS_VERSION='3.1.1'
+RSYNC_DELETE='false'
+LOCK_FILE='/run/lock/backup-toolkit-department-share.lock'

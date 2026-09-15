@@ -1,0 +1,26 @@
+# Trusted root-owned configuration example for backup-job.sh
+# Install as /etc/backup-toolkit/job.conf with mode 0640 or stricter.
+
+JOB_NAME='workstation-profile-archive'
+MODE='archive'
+
+SOURCE_SHARE='//workstation.example.local/data'
+SOURCE_MOUNT='/mnt/backup-source'
+SOURCE_CREDENTIALS='/etc/backup-toolkit/source.credentials'
+
+TARGET_SHARE='//backup.example.local/archive'
+TARGET_MOUNT='/mnt/backup-target'
+TARGET_CREDENTIALS='/etc/backup-toolkit/target.credentials'
+TARGET_SUBDIR='workstation-profile'
+
+CIFS_VERSION='3.1.1'
+ARCHIVE_PREFIX='workstation-profile'
+RETENTION_DAYS='30'
+LOCK_FILE='/run/lock/backup-toolkit-workstation-profile.lock'
+
+# Relative to SOURCE_MOUNT. Multiple entries are supported.
+INCLUDE_PATHS=(
+  'Documents'
+  'Desktop'
+  'Downloads'
+)
