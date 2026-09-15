@@ -110,7 +110,6 @@ while (($# > 0)); do
     esac
 done
 
-# Defaults. The trusted config may override them.
 JOB_NAME='smb-backup'
 MODE='sync'
 SOURCE_SHARE=''
@@ -217,7 +216,7 @@ run_sync() {
 }
 
 run_archive() {
-    local timestamp archive_name temp_archive final_archive checksum_file include_path
+    local timestamp archive_name temp_archive final_archive include_path
     local -a tar_paths=()
 
     require_command tar
@@ -226,7 +225,6 @@ run_archive() {
     archive_name="${ARCHIVE_PREFIX}-${timestamp}.tar.gz"
     final_archive="${TARGET_DIR}/${archive_name}"
     temp_archive="${TARGET_DIR}/.${archive_name}.partial"
-    checksum_file="${final_archive}.sha256"
 
     for include_path in "${INCLUDE_PATHS[@]}"; do
         [[ -e "${SOURCE_MOUNT%/}/${include_path}" ]] \
