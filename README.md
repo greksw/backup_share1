@@ -128,11 +128,9 @@ A trap records which shares were mounted by the current invocation and only unmo
 - `sync` deletion is opt-in;
 - archive output is validated before publication.
 
-## Important credential-rotation note
+## Historical credentials note
 
-Earlier revisions of the original `backup_share1`, `backup_share2`, and `backup_share3` scripts contained environment-specific credentials and notification secrets directly in public source code. Any credentials that were ever valid must be considered compromised and rotated.
-
-Deleting the files in a newer commit does **not** remove values from Git history. Rotation is mandatory; history rewriting is a separate repository-maintenance decision after all affected credentials have been invalidated.
+Earlier revisions of the original `backup_share1`, `backup_share2`, and `backup_share3` experiments used environment-specific example credentials and notification values directly in source code. Those values were test data rather than production secrets, but the current implementation still treats credentials as external root-only configuration and keeps them out of source control.
 
 ## CI
 
@@ -149,8 +147,8 @@ CI intentionally does not mount real SMB shares.
 
 This is a small infrastructure utility, not a replacement for enterprise backup software. It does not provide snapshots, immutable storage, catalogues, application-consistent quiescing, encryption key management, off-site replication, or restore orchestration.
 
-## Repository consolidation
+## Repository history
 
-This repository is the consolidation target for the historical `backup_share1`, `backup_share2`, and `backup_share3` experiments. After review and merge it can be renamed to `backup-toolkit`; the two redundant repositories can then be archived.
+This repository is the consolidated successor to the historical `backup_share1`, `backup_share2`, and `backup_share3` experiments. The redundant companion repositories have been retired.
 
 No license has been selected yet.
